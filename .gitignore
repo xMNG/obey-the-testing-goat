@@ -3,3 +3,4 @@ envname
 geckodriver.log 
 __pycache__ 
 *.pyc 
+venv

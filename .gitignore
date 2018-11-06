@@ -4,3 +4,8 @@ geckodriver.log
 __pycache__ 
 *.pyc 
 venv
+Include
+Lib
+Scripts
+tcl
+pip-selfcheck.json

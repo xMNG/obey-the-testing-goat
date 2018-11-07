@@ -25,7 +25,7 @@ class NewVisitorTest(unittest.TestCase):
 
         # She is invited to enter a to-do item straight away
         inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do-item')
+        self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do item')
 
         # She types "Buy peacock features" into a text box (Edith's hobby is tying fly-fishing lures)
         inputbox.send_keys('Buy Peacock feathers')
@@ -36,20 +36,27 @@ class NewVisitorTest(unittest.TestCase):
 
         # There is still a text box inviting her to add another item.
         # She enters "use peacock feathers to make a fly" (Edith is very methodical"
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(any(row.text == '1: Buy peacock feathers' for row in rows))
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Use peacock feathers to make a fly')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         # The page updates again, and now shows both items on her list
-
         # Edith wonders whether the site will remember her list.
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
+
+
+
         # Then she sees that the site has generated a unique URL for her -- there is some explanatory text to that effect.
 
         # She visits that URL - her to-do list is still there.
 
         # Satisfied, she goes back to sleep
 
-        self.fail('Finish the test!')
+        # self.fail('Finish the test!')
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')

@@ -4,8 +4,10 @@ from .models import Item
 # from django.http import HttpRequest
 # from .views import home_page
 
+"Unit tests check for whether the code returns the correct result"
+"No data is saved because django.test.TestCase doesn't touch the sqlite database"
 
-# Create your tests here.
+
 class HomePageTestCase(TestCase):
     """
     Test case for testing that the home page is uses correct template
@@ -49,7 +51,7 @@ class HomePageTestCase(TestCase):
 
 class ItemModelTestCase(TestCase):
     """
-    This tests the model, not saving to the DB
+    This tests the model, not saving to the DB, does not use the app's sqlite3
     """
 
     def test_saving_and_retrieving_items(self):

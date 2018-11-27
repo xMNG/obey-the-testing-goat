@@ -1,10 +1,18 @@
+import sys, os
+sys.path.insert(0, os.path.abspath('..'))
+
 from django.test import TestCase
 from .models import Item
 # from django.urls import resolve
 # from django.http import HttpRequest
 # from .views import home_page
 
+# TODO why does Item.objects have an unresolved reference?
+
 "Unit tests check for whether the code returns the correct result"
+"To run the functional tests: python manage.py test functional_tests"
+"To run the unit tests: python manage.py test lists"
+"To run both tests: python manage.py test"
 "No data is saved because django.test.TestCase doesn't touch the sqlite database"
 
 

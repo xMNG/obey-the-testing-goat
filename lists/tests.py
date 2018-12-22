@@ -20,10 +20,6 @@ class HomePageTestCase(TestCase):
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'home.html')
 
-    def test_only_saves_items_when_necessary(self):
-        self.client.get('/')
-        self.assertEqual(Item.objects.count(), 0)
-
 
 class ItemModelTestCase(TestCase):
     """
@@ -47,6 +43,7 @@ class ItemModelTestCase(TestCase):
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
         self.assertEqual(second_saved_item.text, 'Item the second')
 
+
 class ListViewTest(TestCase):
 
     def test_display_all_items(self):
@@ -67,6 +64,7 @@ class ListViewTest(TestCase):
         response = self.client.get('/lists/the-only-list-in-the-world/')
         self.assertTemplateUsed(response, 'list.html')
 
+
 class NewListTest(TestCase):
 
     def test_can_save_a_POST_request(self):
@@ -74,7 +72,7 @@ class NewListTest(TestCase):
         This tests whether the data from POST is saved to the HTML (DB later)
         """
         # push this data to the post request
-        self.client.post(path='/', data={'item_text': 'A new list item'})
+        self.client.post(path='/lists/new', data={'item_text': 'A new list item'})
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
@@ -83,8 +81,6 @@ class NewListTest(TestCase):
         """
         This tests for redirect after POST request
         """
-        response = self.client.post(path='/', data={'item_text': 'A new list item'})
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')  # this is to test for unique URL, hardcoded for now
-
-
+        response = self.client.post(path='/lists/new', data={'item_text': 'A new list item'})
+        # response code 302 = url redirect
+        self.assertRedirects(response=response, expected_url='/lists/the-only-list-in-the-world/')

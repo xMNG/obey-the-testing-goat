@@ -11,7 +11,7 @@ def home_page(request):
         return redirect('/lists/the-only-list-in-the-world/')
     # render the view
     items = Item.objects.all()
-    return render(request=request, template_name='home.html', context={'items': items})
+    return render(request=request, template_name='home.html')
 
 
 def view_list(request):

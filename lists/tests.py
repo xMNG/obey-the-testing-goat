@@ -1,13 +1,9 @@
-import sys, os
-sys.path.insert(0, os.path.abspath('..'))
-
 from django.test import TestCase
 from .models import Item
-# from django.urls import resolve
-# from django.http import HttpRequest
-# from .views import home_page
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
-# TODO why does Item.objects have an unresolved reference?
 
 "Unit tests check for whether the code returns the correct result"
 "To run the functional tests: python manage.py test functional_tests"
@@ -45,16 +41,8 @@ class HomePageTestCase(TestCase):
         """
         response = self.client.post('/', data={'item_text': 'A new list item'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
-
-    def test_displays_all_list_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-
-        response = self.client.get('/')
-
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())
+        # self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')  # this is to test for unique URL, hardcoded for now
 
 
 class ItemModelTestCase(TestCase):
@@ -78,3 +66,27 @@ class ItemModelTestCase(TestCase):
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
         self.assertEqual(second_saved_item.text, 'Item the second')
+
+class ListViewTest(TestCase):
+
+    def test_display_all_items(self):
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+
+        # checking if the new URL is still using home.html
+        # TODO this will change to a different html later
+        self.assertTemplateUsed(response=response, template_name='list.html')
+
+        # assertContains returns 404 if URL doesn't exist
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')
+
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response, 'list.html')
+
+
+
+

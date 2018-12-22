@@ -12,17 +12,18 @@ from selenium.webdriver.support import expected_conditions as EC
 "To run the functional tests: python manage.py test functional_tests"
 "To run the unit tests: python manage.py test lists"
 "To run both tests: python manage.py test"
-
+"LiveServerTestCase is a live server but separate from sqlite3"
 
 
 
 class NewVisitorTest(LiveServerTestCase):
 
+    # TODO Does this setUp and tearDown in between every test function or the entire test?
     def setUp(self):
         self.browser = webdriver.Firefox()
 
-    # def tearDown(self):
-    #     self.browser.quit()
+    def tearDown(self):
+        self.browser.quit()
 
     def wait_for_row_in_list_table(self, row_text: str):
         """
@@ -78,7 +79,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Satisfied, she goes back to sleep
 
-        self.fail('Finish the test!')
+        # self.fail('Finish the test!')
 
 
     def test_multiple_users_can_start_lists_at_different_urls(self):
@@ -101,14 +102,14 @@ class NewVisitorTest(LiveServerTestCase):
         # francis visits the home page. There is no sign of Edith's list
         self.browser.get(self.live_server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertNotIn('Buy peacock feathers', page_text)  # we are here
         self.assertNotIn('make a fly', page_text)
 
         # francis starts a new list by entering a new item.
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Buy milk')
+        self.wait_for_row_in_list_table('1: Buy milk')  # but should be here
 
         # francis gets his own unique URL
         francis_list_url = self.browser.current_url

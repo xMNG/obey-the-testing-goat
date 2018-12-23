@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Item
+from .models import Item, List
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
@@ -21,19 +21,27 @@ class HomePageTestCase(TestCase):
         self.assertTemplateUsed(response, 'home.html')
 
 
-class ItemModelTestCase(TestCase):
+class ListAndItemModelTestCase(TestCase):
     """
     This tests the model, not saving to the DB, does not use the app's sqlite3
     """
 
     def test_saving_and_retrieving_items(self):
+        list_ = List()
+        list_.save()
+
         first_item = Item()
         first_item.text = 'The first (ever) list item'
+        first_item.list = list_
         first_item.save()
 
         second_item = Item()
         second_item.text = 'Item the second'
+        second_item.list = list_
         second_item.save()
+
+        saved_list = List.objects.first()
+        self.assertEqual(saved_list, list_)
 
         saved_items = Item.objects.all()
         self.assertEqual(saved_items.count(), 2)
@@ -41,14 +49,17 @@ class ItemModelTestCase(TestCase):
         first_saved_item = saved_items[0]
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
+        self.assertEqual(first_saved_item.list, list_)
         self.assertEqual(second_saved_item.text, 'Item the second')
+        self.assertEqual(second_saved_item.list, list_)
 
 
 class ListViewTest(TestCase):
 
     def test_display_all_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
+        list_ = List.objects.create()
+        Item.objects.create(text='itemey 1', list=list_)
+        Item.objects.create(text='itemey 2', list=list_)
 
         response = self.client.get('/lists/the-only-list-in-the-world/')
 

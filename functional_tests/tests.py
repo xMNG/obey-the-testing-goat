@@ -69,7 +69,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # The page updates again, and now shows both items on her list
         # Edith wonders whether the site will remember her list.
-        self.wait_for_row_in_list_table('1: Buy peacock feathers')  # staleElementException in this line
+        self.wait_for_row_in_list_table('1: Buy peacock feathers')
         self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
 
@@ -102,14 +102,14 @@ class NewVisitorTest(LiveServerTestCase):
         # francis visits the home page. There is no sign of Edith's list
         self.browser.get(self.live_server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertNotIn('Buy peacock feathers', page_text)  # we are here
+        self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('make a fly', page_text)
 
         # francis starts a new list by entering a new item.
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Buy milk')  # but should be here
+        self.wait_for_row_in_list_table('1: Buy milk')
 
         # francis gets his own unique URL
         francis_list_url = self.browser.current_url

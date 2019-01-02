@@ -17,15 +17,16 @@ Including another URLconf
 import sys, os
 sys.path.insert(0, os.path.abspath('..'))
 
-from django.conf.urls import url
+from django.conf.urls import include, url
 from django.contrib import admin
+
 import lists.views
+from lists import views as list_views
+from lists import urls as list_urls
 
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
-    # url('/', home_page())
     url(regex=r'^$', view=lists.views.home_page, name='home'),
-    url(regex=r'^lists/new$', view=lists.views.new_list, name='new_list'),
-    url(regex=r'^lists/the-only-list-in-the-world/$', view=lists.views.view_list, name='view_list')
+    url(regex=r'^lists/', view=include(list_urls)),
 ]

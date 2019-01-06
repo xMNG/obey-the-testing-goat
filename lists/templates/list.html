@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>To-Do</h1>
-    <!--after post, return to home template-->
+    <!--where does list.id come from?-->
     <form method="POST" action="/lists/{{ list.id }}/add_item">
         <input name="item_text" id="id_new_item" placeholder="Enter a to-do item" />
         {% csrf_token %}

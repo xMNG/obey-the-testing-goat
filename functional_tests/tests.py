@@ -1,7 +1,8 @@
 import time
 # import unittest
 
-from django.test import LiveServerTestCase
+# from django.test import LiveServerTestCase  # this does not import static files
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase  # this imports static files
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -16,7 +17,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
 
     # TODO Does this setUp and tearDown in between every test function or the entire test?
     def setUp(self):
@@ -124,6 +125,10 @@ class NewVisitorTest(LiveServerTestCase):
         # satisfied, they both go back to sleep
 
     def test_layout_and_styling(self):
+        """
+        Tests CSS layout and styling
+        :return: None
+        """
         # Edith goes to homepage
         self.browser.get(self.live_server_url)
         self.browser.set_window_size(1024, 768)

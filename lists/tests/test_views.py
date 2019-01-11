@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Item, List
+from ..models import Item, List
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
@@ -19,39 +19,6 @@ class HomePageTestCase(TestCase):
     def test_uses_home_template(self):
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'home.html')
-
-
-class ListAndItemModelTestCase(TestCase):
-    """
-    This tests the model, not saving to the DB, does not use the app's sqlite3
-    """
-
-    def test_saving_and_retrieving_items(self):
-        list_ = List()
-        list_.save()
-
-        first_item = Item()
-        first_item.text = 'The first (ever) list item'
-        first_item.list = list_
-        first_item.save()
-
-        second_item = Item()
-        second_item.text = 'Item the second'
-        second_item.list = list_
-        second_item.save()
-
-        saved_list = List.objects.first()
-        self.assertEqual(saved_list, list_)
-
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-
-        first_saved_item = saved_items[0]
-        second_saved_item = saved_items[1]
-        self.assertEqual(first_saved_item.text, 'The first (ever) list item')
-        self.assertEqual(first_saved_item.list, list_)
-        self.assertEqual(second_saved_item.text, 'Item the second')
-        self.assertEqual(second_saved_item.list, list_)
 
 
 class ListViewTest(TestCase):
@@ -81,7 +48,7 @@ class ListViewTest(TestCase):
         self.assertNotContains(response=response, text='other list item 2')
 
     def test_passes_correct_list_to_template(self):
-        other_list = List.objects.create()
+        _other_list = List.objects.create()
         correct_list = List.objects.create()
         response = self.client.get(f'/lists/{correct_list.id}/')
         self.assertEqual(response.context['list'], correct_list)
@@ -110,7 +77,7 @@ class NewListTest(TestCase):
 
 class NewItemTest(TestCase):
     def test_can_save_a_POST_request_to_an_existing_list(self):
-        other_list = List.objects.create()
+        _other_list = List.objects.create()
         correct_list = List.objects.create()
 
         self.client.post(f'/lists/{correct_list.id}/add_item', data={'item_text': 'A new item for an existing list'})
@@ -121,7 +88,7 @@ class NewItemTest(TestCase):
         self.assertEqual(new_item.list, correct_list)
 
     def test_redirects_to_list_view(self):
-        other_list = List.objects.create()
+        _other_list = List.objects.create()
         correct_list = List.objects.create()
 
         response = self.client.post(

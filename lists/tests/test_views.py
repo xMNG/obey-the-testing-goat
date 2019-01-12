@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.utils.html import escape
 from ..models import Item, List
 import os
 import sys
@@ -73,6 +74,18 @@ class NewListTest(TestCase):
         response = self.client.post(path='/lists/new', data={'item_text': 'A new list item'})
         new_list = List.objects.first()
         self.assertRedirects(response=response, expected_url=f'/lists/{new_list.id}/')
+
+    def test_validation_errors_are_sent_back_to_home_page_template(self):
+        response = self.client.post(path='/lists/new', data={'item_text': ''})
+        self.assertEqual(first=response.status_code, second=200)
+        self.assertTemplateUsed(response=response, template_name='home.html')
+        expected_error = escape("You can't have an empty list item")  # escape this or {% autoescape off %} @ template
+        self.assertContains(response=response, text=expected_error)
+
+    def test_invalid_list_items_arent_saved(self):
+        self.client.post(path='/lists/new', data={'item_text': ''})
+        self.assertEqual(first=List.objects.count(), second=0)
+        self.assertEqual(first=List.objects.count(), second=0)
 
 
 class NewItemTest(TestCase):

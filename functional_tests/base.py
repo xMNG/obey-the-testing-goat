@@ -4,9 +4,6 @@ import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
 
 
 "functional test checks for a user's story or experience to ensure it works"
@@ -18,8 +15,8 @@ from selenium.webdriver.support import expected_conditions as ec
 "How to test: enter this in bash cmd line: "
 "STAGING_SERVER=mng2.pythonanywhere.com python manage.py test functional_tests --failfast"
 
-
 MAX_WAIT = 10
+
 
 class FunctionalTest(StaticLiveServerTestCase):
 
@@ -39,11 +36,17 @@ class FunctionalTest(StaticLiveServerTestCase):
         :param row_text: text to search for
         :return: None
         """
-        WebDriverWait(self.browser, MAX_WAIT).until(ec.presence_of_element_located((By.ID, 'id_list_table')))
-        WebDriverWait(self.browser, MAX_WAIT).until(ec.presence_of_element_located((By.TAG_NAME, 'tr')))
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
+        start_time = time.time()
+        while True:
+            try:
+                table = self.browser.find_element_by_id('id_list_table')
+                rows = table.find_elements_by_tag_name('tr')
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.1)
 
     def wait_for(self, function_name):
         """

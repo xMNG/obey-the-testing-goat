@@ -56,4 +56,12 @@ class ListAndItemModelTestCase(TestCase):
             item.save()
             item.full_clean()
 
+    def test_get_absolute_url(self):
+        """
+        Test to get the absolute URL from a list model object
+        :return: Pass or fail
+        """
+        list_ = List.objects.create()
+        self.assertEqual(first=list_.get_absolute_url(), second=f'/lists/{list_.id}/')
+
 

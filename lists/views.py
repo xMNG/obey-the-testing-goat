@@ -2,13 +2,14 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
 from .models import Item, List
 
-
 # Create your views here.
+# TODO
+#  Remove duplication of validation logic in views
+
+
 def home_page(request):
-    # render the view
     return render(request=request, template_name='home.html')
 
-# TODO Enforcing Model Validation in view_list
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
     error_msg = None
@@ -18,7 +19,7 @@ def view_list(request, list_id):
             item = Item(text=request.POST['item_text'], list= list_)  # does not create item, only instantiate
             item.full_clean()
             item.save()
-            return redirect(f'/lists/{list_.id}/')
+            return redirect(to=list_)  # uses get_absolute_url() automatically
         except ValidationError:
             error_msg = "You can't have an empty list item"
 
@@ -40,6 +41,6 @@ def new_list(request):
         list_.delete()
         error_msg = "You can't have an empty list item"
         return render(request=request, template_name='home.html', context={"error": error_msg})
-    return redirect(to=f'/lists/{list_.id}/')
+    return redirect(to=list_)
 
 

@@ -8,13 +8,21 @@ def home_page(request):
     # render the view
     return render(request=request, template_name='home.html')
 
-
+# TODO Enforcing Model Validation in view_list
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
+    error_msg = None
+
     if request.method == 'POST':
-        Item.objects.create(text=request.POST['item_text'], list= list_)
-        return redirect(f'/lists/{list_.id}/')
-    return render(request=request, template_name='list.html', context={'list': list_})
+        try:
+            item = Item(text=request.POST['item_text'], list= list_)  # does not create item, only instantiate
+            item.full_clean()
+            item.save()
+            return redirect(f'/lists/{list_.id}/')
+        except ValidationError:
+            error_msg = "You can't have an empty list item"
+
+    return render(request=request, template_name='list.html', context={'list': list_, 'error': error_msg})
 
 
 def new_list(request):
@@ -24,7 +32,7 @@ def new_list(request):
     :return: Redirect to view_list with the appropriate list id
     """
     list_ = List.objects.create()
-    item = Item.objects.create(text=request.POST['item_text'], list=list_)
+    item = Item(text=request.POST['item_text'], list=list_)  # instantiate, then call full_clean before saving
     try:
         item.full_clean()  # produces ValidationError if input inappropriate
         item.save()

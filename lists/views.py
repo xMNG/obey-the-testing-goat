@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
 from .models import Item, List
 
+
 # Create your views here.
 # TODO
 #  Remove duplication of validation logic in views

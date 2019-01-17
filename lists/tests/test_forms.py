@@ -3,7 +3,7 @@ from lists.forms import ItemForm
 
 class ItemFormTestCase(TestCase):
 
-    def test_form_renders_item_text_input(self):
+    def test_form_renders_text_input(self):
         """
         Check if the form renders the placeholders and class
         :return: Pass or Fail
@@ -21,6 +21,6 @@ class ItemFormTestCase(TestCase):
         form = ItemForm(data={'text': ''})
         self.assertFalse(form.is_valid())
         self.assertEqual(
-            form.errors['text'],
-            ["You can't have an empty list item"]
+            first=form.errors['text'],
+            second=["You can't have an empty list item"]
         )

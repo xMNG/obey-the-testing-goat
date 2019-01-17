@@ -63,6 +63,14 @@ class FunctionalTest(StaticLiveServerTestCase):
                     raise e
                 time.sleep(0.5)
 
+    def get_item_input_box(self):
+        """
+        Helper function to pick out input text box
+        :return: Input text box browser node
+        """
+        time.sleep(1)
+        return self.wait_for(lambda :self.browser.find_element_by_id('id_text'))
+        # self.browser.find_element_by_id('id_text')
 
 # removed because using django LiveTestCase runner to run these tests
 # if __name__ == '__main__':

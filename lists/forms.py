@@ -22,5 +22,15 @@ class ItemForm(forms.models.ModelForm):
             'text': {'required': EMPTY_ITEM_ERROR},
         }
 
+    def save(self, for_list):
+        """
+        Overrides save to include a list
+        :param for_list: list object from lists.models
+        :return: Saves object to DB
+        """
+        self.instance.list = for_list
+        return super().save()
+
+
 
 

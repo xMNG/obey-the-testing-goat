@@ -3,6 +3,12 @@ from .base import FunctionalTest
 
 
 class ItemValidationTest(FunctionalTest):
+    def get_error_element(self):
+        """
+        Finds the error message via .has-error class
+        :return: Returns error msg node
+        """
+        return self.browser.find_element_by_css_selector('.has-error')
 
     def test_cannot_add_empty_list_items(self):
         # edith goes to the home page and accidentally tries to submit an empty item, hits enter on empty input box
@@ -52,10 +58,35 @@ class ItemValidationTest(FunctionalTest):
 
         # page returns error
         self.wait_for(lambda : self.assertEqual(
-            first=self.browser.find_element_by_css_selector('.has-error').text,
+            self.get_error_element().text,
             second="You've already got this in your list"
         ))
 
+    def test_error_messages_are_cleared_on_input(self):
+        """
+        Test to see if error messages are cleared upon text input
+        :return: Pass or fail
+        """
+        # get page and send one item, then wait for it to appear
+        self.browser.get(self.live_server_url)
+        self.get_item_input_box().send_keys('Banter too thick')
+        self.get_item_input_box().send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Banter too thick')
+
+        # send same item again and wait for message
+        self.get_item_input_box().send_keys('Banter too thick')
+        self.get_item_input_box().send_keys(Keys.ENTER)
+        self.wait_for(lambda: self.assertTrue(
+            self.get_error_element().is_displayed()
+        ))
+
+        # start typing to clear error
+        self.get_item_input_box().send_keys('a')
+
+        # error no longer is there
+        self.wait_for(lambda :self.assertFalse(
+            self.get_error_element().is_displayed()
+        ))
 
 # removed because using django LiveTestCase runner to run these tests
 # if __name__ == '__main__':

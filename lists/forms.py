@@ -34,18 +34,27 @@ class ItemForm(forms.models.ModelForm):
         return super().save()
 
 class ExistingListItemForm(ItemForm):
-
+    # TODO learn this!!
     def __init__(self, for_list, *args, **kwargs):
+        """
+        Uses parent constructor
+        :param for_list: List obj
+        :param args: str text data
+        :param kwargs: Other
+        """
         super().__init__(*args, **kwargs)
         self.instance.list = for_list
 
+    # TODO learn this!!
     def validate_unique(self):
         try:
             self.instance.validate_unique()
         except ValidationError as e:
-            e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}
-            self._update_errors(e)
-    
+            e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}  # adds custom error message
+            self._update_errors(e)  # updates error
+
+    def save(self):
+        return forms.models.ModelForm.save(self)
 
 
 

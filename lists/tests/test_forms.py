@@ -28,16 +28,19 @@ class ItemFormTestCase(TestCase):
             second=["You can't have an empty list item"]
         )
 
+
+
+
+class ExistingListItemFormTest(TestCase):
     def test_form_handles_saving_to_a_list(self):
+        # TODO this used to be in ItemFormTest
         list_ = List.objects.create()
-        form = ItemForm(data={'text': 'fake text'})
-        new_item = form.save(for_list=list_)
+        form = ExistingListItemForm(for_list=list_, data={'text': 'fake text'})
+        new_item = form.save()
         self.assertEqual(first=new_item, second=Item.objects.first())
         self.assertEqual(first=new_item.text, second='fake text')
         self.assertEqual(first=new_item.list, second=list_)
 
-
-class ExistingListItemFormTest(TestCase):
     def test_form_renders_item_text_input(self):
         """
         Test to ensure the text input box appears
@@ -64,6 +67,12 @@ class ExistingListItemFormTest(TestCase):
         """
         list_ = List.objects.create()
         Item.objects.create(list=list_, text='no twins!')
-        form = ExistingListItemForm(for_list=list_, data={'text': 'no_twins!'})
+        form = ExistingListItemForm(for_list=list_, data={'text': 'no twins!'})
         self.assertFalse(expr=form.is_valid())
         self.assertEqual(first=form.errors['text'], second=[DUPLICATE_ITEM_ERROR])
+
+    def test_form_save(self):
+        list_ = List.objects.create()
+        form =  ExistingListItemForm(for_list=list_, data={'text': 'hi'})
+        new_item = form.save()
+        self.assertEqual(new_item, Item.objects.all()[0])

@@ -9,6 +9,10 @@ SUBJECT = 'Your login link for Superlists'
 
 class LoginTest(FunctionalTest):
     def test_can_get_email_link_to_log_in(self):
+        """
+        Test mocks the email function to check for appropriate email link
+        :return: Pass or fail
+        """
         # Edith goes to the awesome superlists site
         # and notices a "Log in" section int he navbar
         # It's telling her to enter her email address, so she does

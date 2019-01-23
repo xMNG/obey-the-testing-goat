@@ -21,6 +21,7 @@ from django.conf.urls import include
 from django.conf.urls import url
 # from django.contrib import admin
 
+import accounts.urls
 import lists.views
 import lists.urls
 
@@ -30,4 +31,5 @@ urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(regex=r'^$', view=lists.views.home_page, name='home'),
     url(regex=r'^lists/', view=include(lists.urls)),
+    url(regex='^accounts/', view=include(accounts.urls)),
 ]

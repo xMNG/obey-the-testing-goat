@@ -1,10 +1,10 @@
-# hack to import from sibling directory
 import os
 import sys
 
 from django.conf.urls import url
 import lists.views
 
+# hack to import from sibling directory
 sys.path.insert(0, os.path.abspath('..'))
 
 urlpatterns = [

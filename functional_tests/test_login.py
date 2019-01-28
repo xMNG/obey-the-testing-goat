@@ -1,6 +1,7 @@
+import re
+import time
 from django.core import mail
 from selenium.webdriver.common.keys import Keys
-import re
 
 from functional_tests.base import FunctionalTest
 

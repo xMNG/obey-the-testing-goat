@@ -23,6 +23,7 @@ from django.conf.urls import url
 
 import lists.views
 import lists.urls
+import accounts.urls
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -30,4 +31,5 @@ urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(regex=r'^$', view=lists.views.home_page, name='home'),
     url(regex=r'^lists/', view=include(lists.urls)),
+    url(regex=r'^accounts/', view=include(accounts.urls))
 ]

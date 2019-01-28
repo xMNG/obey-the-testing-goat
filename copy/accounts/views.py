@@ -10,7 +10,7 @@ def send_login_email(request):
     token = Token.objects.create(email=email)
 
     url = request.build_absolute_uri(
-        reverse('login') + '?token=' + str(token.uid)
+        reverse('login') + '?token=' + str(token.uid) + '/'
     )
     message_body = f'Use this link to log in:\n\n{url}'
 
@@ -26,10 +26,17 @@ def send_login_email(request):
     )
     return redirect(to='/')
 
-def login(request):
-    uid = request.GET.get(key='token')
-    user = auth.authenticate(uid=uid)
-    if user:
-        auth.login(request=request, user=user)
-    return redirect(to='/')
+# def login(request):
+#     uid = request.GET.get(key='token')
+#     user = auth.authenticate(uid=uid)
+#     if user:
+#         auth.login(request=request, user=user)
+#     return redirect(to='/')
 
+
+def login(request):
+    user = auth.authenticate(uid=request.GET.get('token'))
+    print(user)
+    if user:
+        auth.login(request, user)
+    return redirect('/')

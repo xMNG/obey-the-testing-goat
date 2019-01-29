@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '^t&xkc%c+3=_+-r#v(0nudw-+v=x_j3n5ekbp@ke0oxc(44$(n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['MNG2.pythonanywhere.com', 'localhost']
 

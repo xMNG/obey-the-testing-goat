@@ -20,7 +20,6 @@ MAX_WAIT = 10
 
 class FunctionalTest(StaticLiveServerTestCase):
 
-    # TODO Does this setUp and tearDown in between every test function or the entire test?
     def setUp(self):
         self.browser = webdriver.Firefox()
         staging_server = os.environ.get('STAGING_SERVER')
@@ -71,6 +70,21 @@ class FunctionalTest(StaticLiveServerTestCase):
         time.sleep(1)
         return self.wait_for(lambda :self.browser.find_element_by_id('id_text'))
         # self.browser.find_element_by_id('id_text')
+
+    def wait_to_be_logged_in(self, email):
+        self.wait_for(
+            lambda: self.browser.find_element_by_link_text('Log out')
+        )
+        navbar = self.browser.find_element_by_css_selector('.navbar')
+        self.assertIn(member=email, container=navbar.text)
+
+    def wait_to_be_logged_out(self, email):
+        self.wait_for(
+            lambda: self.browser.find_element_by_name('email')
+        )
+        navbar = self.browser.find_element_by_css_selector('.navbar')
+        self.assertNotIn(member=email, container=navbar.text)
+
 
 # removed because using django LiveTestCase runner to run these tests
 # if __name__ == '__main__':

@@ -9,6 +9,7 @@ TEST_EMAIL = 'edith@example.com'
 SUBJECT = 'Your login link for Superlists'
 
 class LoginTest(FunctionalTest):
+
     def test_can_get_email_link_to_log_in(self):
         """
         Test mocks the email function to check for appropriate email link
@@ -44,8 +45,10 @@ class LoginTest(FunctionalTest):
         self.browser.get(url)
 
         # she is logged in and sees a log out link
-        self.wait_for(lambda: self.browser.find_element_by_link_text(link_text='Log out'))
+        self.wait_to_be_logged_in(email=TEST_EMAIL)
 
-        # checks for email in the navbar
-        navbar = self.browser.find_element_by_css_selector('.navbar')
-        self.assertIn(member=TEST_EMAIL, container=navbar.text)
+        # she logs out
+        self.browser.find_element_by_link_text('Log out').click()
+
+        # she is logged out
+        self.wait_to_be_logged_out(email=TEST_EMAIL)

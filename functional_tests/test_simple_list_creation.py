@@ -23,27 +23,29 @@ class NewVisitorTest(FunctionalTest):
         inputbox = self.get_item_input_box()
         self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do item')
 
+        self.add_list_item('Buy peacock feathers')
         # She types "Buy peacock features" into a text box (Edith's hobby is tying fly-fishing lures)
-        inputbox.send_keys('Buy peacock feathers')
+        # inputbox.send_keys('Buy peacock feathers')
 
         # When she hits enter, the page updates, and now the page lists:
         # "1: Buy peacock feathers" as an item in a to-do list
-        inputbox.send_keys(Keys.ENTER)
-        time.sleep(0.1)  # lets page refresh so explicit wait does not attach to element before redirect
-        self.wait_for_row_in_list_table('1: Buy peacock feathers')
+        # inputbox.send_keys(Keys.ENTER)
+        # time.sleep(0.1)  # lets page refresh so explicit wait does not attach to element before redirect
+        # self.wait_for_row_in_list_table('1: Buy peacock feathers')
 
         # There is still a text box inviting her to add another item.
         # She enters "use peacock feathers to make a fly" (Edith is very methodical"
         WebDriverWait(self.browser, 10).until(ec.presence_of_element_located((By.ID, 'id_text')))
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys('Use peacock feathers to make a fly')
-        inputbox.send_keys(Keys.ENTER)
-        time.sleep(0.1)  # lets page refresh so explicit wait does not attach to element before redirect
+        # inputbox = self.get_item_input_box()
+        self.add_list_item('Use peacock feathers to make a fly')
+        # inputbox.send_keys('Use peacock feathers to make a fly')
+        # inputbox.send_keys(Keys.ENTER)
+        # time.sleep(0.1)  # lets page refresh so explicit wait does not attach to element before redirect
 
         # The page updates again, and now shows both items on her list
         # Edith wonders whether the site will remember her list.
-        self.wait_for_row_in_list_table('1: Buy peacock feathers')
-        self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
+        # self.wait_for_row_in_list_table('1: Buy peacock feathers')
+        # self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
         # Then she sees that the site has generated a unique URL for her, there is some explanatory text to that effect.
 
@@ -56,10 +58,11 @@ class NewVisitorTest(FunctionalTest):
     def test_multiple_users_can_start_lists_at_different_urls(self):
         # Edith starts a new to-do list
         self.browser.get(self.live_server_url)
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys('Buy peacock feathers')
-        inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Buy peacock feathers')
+        # inputbox = self.get_item_input_box()
+        # inputbox.send_keys('Buy peacock feathers')
+        # inputbox.send_keys(Keys.ENTER)
+        # self.wait_for_row_in_list_table('1: Buy peacock feathers')
+        self.add_list_item('Buy peacock feathers')
 
         # she notices that her list has a unique URL
         edith_list_url = self.browser.current_url

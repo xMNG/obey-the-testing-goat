@@ -46,11 +46,12 @@ class ItemValidationTest(FunctionalTest):
         self.browser.get(self.live_server_url)
 
         # find the input box and enter in text
-        self.get_item_input_box().send_keys('Buy wellies')
-        self.get_item_input_box().send_keys(Keys.ENTER)
+        self.add_list_item('Buy wellies')
+        # self.get_item_input_box().send_keys('Buy wellies')
+        # self.get_item_input_box().send_keys(Keys.ENTER)
 
         # wait for page to reload and check text in row
-        self.wait_for_row_in_list_table('1: Buy wellies')
+        # self.wait_for_row_in_list_table('1: Buy wellies')
 
         # find the input box and enter in the same text again
         self.get_item_input_box().send_keys('Buy wellies')
@@ -69,9 +70,10 @@ class ItemValidationTest(FunctionalTest):
         """
         # get page and send one item, then wait for it to appear
         self.browser.get(self.live_server_url)
-        self.get_item_input_box().send_keys('Banter too thick')
-        self.get_item_input_box().send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Banter too thick')
+        self.add_list_item('Banter too thick')
+        # self.get_item_input_box().send_keys('Banter too thick')
+        # self.get_item_input_box().send_keys(Keys.ENTER)
+        # self.wait_for_row_in_list_table('1: Banter too thick')
 
         # send same item again and wait for message
         self.get_item_input_box().send_keys('Banter too thick')

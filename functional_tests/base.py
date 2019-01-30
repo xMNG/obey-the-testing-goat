@@ -4,7 +4,7 @@ import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-
+from selenium.webdriver.common.keys import Keys
 
 "functional test checks for a user's story or experience to ensure it works"
 "To run the functional tests: python manage.py test functional_tests"
@@ -45,6 +45,19 @@ class FunctionalTest(StaticLiveServerTestCase):
                     time.sleep(0.5)
         return modified_function
 
+    def add_list_item(self, list_item):
+        """
+        Adds list item to list and checks that item appears in list
+        :param list_item: string to-do list item to add
+        :return: None
+        """
+        num_rows = len(self.browser.find_elements_by_css_selector('#id_list_table tr'))
+        self.get_item_input_box().send_keys(list_item)
+        self.get_item_input_box().send_keys(Keys.ENTER)
+        item_number = num_rows + 1
+        self.wait_for_row_in_list_table(f'{item_number}: {list_item}')
+
+
     @wait
     def wait_for_row_in_list_table(self, row_text: str):
         """
@@ -72,7 +85,6 @@ class FunctionalTest(StaticLiveServerTestCase):
         """
         time.sleep(1)
         return self.wait_for(lambda :self.browser.find_element_by_id('id_text'))
-        # self.browser.find_element_by_id('id_text')
 
     @wait
     def wait_to_be_logged_in(self, email):

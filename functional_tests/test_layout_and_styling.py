@@ -15,8 +15,9 @@ class LayoutAndStylingTest(FunctionalTest):
         # She notices that the input box is centered
         inputbox = self.get_item_input_box()
         # She starts a new list and notices that the input is nicely centered there as well
-        inputbox.send_keys('testing')
-        inputbox.send_keys(Keys.ENTER)
+        self.add_list_item('testing')
+        # inputbox.send_keys('testing')
+        # inputbox.send_keys(Keys.ENTER)
         # she sees that the new input box is still centered
         inputbox = self.get_item_input_box()
         self.assertAlmostEqual(first=inputbox.location['x'] + inputbox.size['width'] / 2, second=512, delta=10)

@@ -1,6 +1,7 @@
 import os
 import sys
 from django.test import TestCase
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from ..models import Item, List
 
@@ -12,6 +13,7 @@ from ..models import Item, List
 
 sys.path.insert(0, os.path.abspath('..'))
 
+User = get_user_model()
 
 class ItemModelTest(TestCase):
     """
@@ -110,3 +112,19 @@ class ListModelTest(TestCase):
         """
         list_ = List.objects.create()
         self.assertEqual(first=list_.get_absolute_url(), second=f'/lists/{list_.id}/')
+
+    def test_lists_can_have_owners(self):
+        user = User.objects.create(email='a@b.com')
+        list_ = List.objects.create(owner=user)
+        self.assertIn(member=list_, container=user.list_set.all())
+
+    def test_list_owner_is_optional(self):
+        list_ = List.objects.create()  # should not raise
+
+    def test_list_name_is_first_item_text(self):
+        list_ = List.objects.create()
+        Item.objects.create(list=list_, text='first item')
+        Item.objects.create(list=list_, text='second item')
+        self.assertEqual(first=list_.name, second='first item')
+
+

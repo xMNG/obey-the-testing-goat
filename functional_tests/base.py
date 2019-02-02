@@ -1,10 +1,15 @@
 import os
 import time
 
+from django.conf import settings
+from django.contrib.auth import BACKEND_SESSION_KEY, SESSION_KEY, get_user_model
+from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
+
+User = get_user_model()
 
 "functional test checks for a user's story or experience to ensure it works"
 "To run the functional tests: python manage.py test functional_tests"
@@ -98,6 +103,25 @@ class FunctionalTest(StaticLiveServerTestCase):
         navbar = self.browser.find_element_by_css_selector('.navbar')
         self.assertNotIn(member=email, container=navbar.text)
 
+    def create_pre_authenticated_session(self, email):
+        """
+        Helper function to create a logged in/auth session
+        :param email: string email
+        :return: None, creates pre-auth session in db
+        """
+        user = User.objects.create(email=email)
+        session =  SessionStore()
+        session[SESSION_KEY] = user.pk
+        session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
+        session.save()
+
+        # to get a cookie, we visit a 404 url in the domain, since it loads fastest
+        self.browser.get(url=self.live_server_url + "/404_no_such_url")
+        self.browser.add_cookie(dict(
+            name=settings.SESSION_COOKIE_NAME,
+            value=session.session_key,
+            path='/',
+        ))
 
 
 # removed because using django LiveTestCase runner to run these tests

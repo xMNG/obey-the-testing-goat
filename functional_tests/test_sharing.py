@@ -1,12 +1,14 @@
-import time
 from selenium import webdriver
 from functional_tests.base import FunctionalTest
+from functional_tests.list_page import ListPage
+from functional_tests.my_lists_page import MyListsPage
 
 def quit_if_possible(browser):
     try:
         browser.quit()
     except:
         pass
+
 
 class SharingTest(FunctionalTest):
 
@@ -25,14 +27,41 @@ class SharingTest(FunctionalTest):
         # edith goes to the home page and starts a list
         self.browser = edith_browser
         self.browser.get(self.live_server_url)
-        self.add_list_item('Get help')
+        list_page = ListPage(self).add_list_item('Get help')
 
         # she notices a "Share this list" option
-        share_box = self.browser.find_element_by_css_selector(
-            'input[name="sharee"]'
-        )
+        # FIXME there is an error here, ListPage obj has no function
+        share_box = list_page.get_share_box()
         self.assertEqual(
             first=share_box.get_attribute('placeholder'),
             second='your-friend@example.com'
         )
+
+        # she shares her list
+        # the page updates to say that it's shared with Oniciferous:
+        list_page.share_list_with('oniciferous@example.com')
+
+        # Oniciferous now goes to the lists page with his browser
+        self.browser = oni_browser
+        MyListsPage(self).go_to_my_lists_page()
+
+        # he sees Edith's list in there!
+        self.browser.find_element_by_link_text('Get help').click()
+
+        # on the list page, Oniciferous can see Edith's list
+        self.wait_for(lambda: self.assertEqual(
+            list_page.get_list_owner(),
+            'edith@example.com'
+        ))
+
+        # he adds an item in the list
+        list_page.add_list_item('Hi Edith!')
+
+        # When Edith refreshes the page, she sees Oniciferous' addition
+        self.browser = edith_browser
+        self.browser.refresh()
+        list_page.wait_for_row_in_list_table('Hi Edith!', 2)
+
+
+
 

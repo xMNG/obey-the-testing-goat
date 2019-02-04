@@ -23,6 +23,24 @@ User = get_user_model()
 MAX_WAIT = 10
 
 
+def wait(function):
+    """
+    Decorator to wrap wait functions and isolate time features to this function
+    :return: wrapped function in wait
+    """
+
+    def modified_function(*args, **kwargs):
+        start_time = time.time()
+        while True:
+            try:
+                return function(*args, **kwargs)
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+
+    return modified_function
+
 class FunctionalTest(StaticLiveServerTestCase):
 
     def setUp(self):
@@ -34,21 +52,21 @@ class FunctionalTest(StaticLiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def wait(function):
-        """
-        Decorator to wrap wait functions and isolate time features to this function
-        :return: wrapped function in wait
-        """
-        def modified_function(*args, **kwargs):
-            start_time = time.time()
-            while True:
-                try:
-                    return function(*args, **kwargs)
-                except (AssertionError, WebDriverException) as e:
-                    if time.time() - start_time > MAX_WAIT:
-                        raise e
-                    time.sleep(0.5)
-        return modified_function
+    # def wait(function):
+    #     """
+    #     Decorator to wrap wait functions and isolate time features to this function
+    #     :return: wrapped function in wait
+    #     """
+    #     def modified_function(*args, **kwargs):
+    #         start_time = time.time()
+    #         while True:
+    #             try:
+    #                 return function(*args, **kwargs)
+    #             except (AssertionError, WebDriverException) as e:
+    #                 if time.time() - start_time > MAX_WAIT:
+    #                     raise e
+    #                 time.sleep(0.5)
+    #     return modified_function
 
     def add_list_item(self, list_item):
         """

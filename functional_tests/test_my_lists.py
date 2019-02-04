@@ -1,7 +1,8 @@
 from django.contrib.auth import  get_user_model
 from functional_tests.base import FunctionalTest
+from functional_tests.my_lists_page import MyListsPage
 
-User = get_user_model()
+# User = get_user_model()
 
 class MyListsTest(FunctionalTest):
 

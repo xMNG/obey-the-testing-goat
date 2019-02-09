@@ -162,7 +162,6 @@ class ListViewTest(TestCase):
 
 
 class NewListTest(TestCase):
-    # FIXME This fails, integrity error
     def test_can_save_a_POST_request(self):
         """
         This tests whether the data from POST is saved to the HTML (DB later)
@@ -173,7 +172,6 @@ class NewListTest(TestCase):
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
-    # FIXME this fails, integrity error
     def test_redirects_after_POST(self):
         """
         This tests for redirect after POST request
@@ -236,3 +234,20 @@ class MyListTest(TestCase):
 
         response = self.client.get('/lists/users/a@b.com/')
         self.assertEqual(first=response.context['owner'], second=correct_user)
+
+class ShareListTest(TestCase):
+
+    def test_post_redirects_to_list_page(self):
+        list_ = List.objects.create()
+        recipient = User.objects.create(email='target_email@django.com')
+        response = self.client.post(path=f'/lists/{list_.id}/share/', data={'sharee': recipient.email})
+        self.assertRedirects(response=response, expected_url=f'/lists/{list_.id}/')
+
+    def test_shared_with_user_appears_in_list_attributes(self):
+        user = User.objects.create(email='a@b.com')
+        list_ = List.objects.create(owner=user)
+        recipient = User.objects.create(email='target_email@django.com')
+        self.client.post(path=f'/lists/{list_.id}/share/', data={'sharee': recipient.email})
+        self.assertIn(member=recipient, container=list_.shared_with.all())
+
+

@@ -39,5 +39,21 @@ def new_list(request):
         return render(request=request, template_name='home.html', context={'form': form})
 
 def my_lists(request, email):
+    # get the owner
     owner = User.objects.get(email=email)
-    return render(request=request, template_name='my_lists.html', context={'owner': owner})
+    # get all lists shared with owner via email
+    lists_shared_with_owner = List.objects.filter(shared_with=email)
+    return render(request=request, template_name='my_lists.html', context={'owner': owner, 'lists_shared_with_owner': lists_shared_with_owner})
+
+def share_list(request, list_id):
+    list_ = List.objects.get(pk=list_id)
+    email = request.POST['sharee']
+
+    if User.objects.filter(email=email).exists():
+        list_.shared_with.add(email)
+
+    else:
+        User.objects.create(email=email)
+        list_.shared_with.add(email)
+
+    return redirect(to=list_)

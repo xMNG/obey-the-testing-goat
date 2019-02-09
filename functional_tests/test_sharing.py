@@ -27,10 +27,9 @@ class SharingTest(FunctionalTest):
         # edith goes to the home page and starts a list
         self.browser = edith_browser
         self.browser.get(self.live_server_url)
-        list_page = ListPage(self).add_list_item('Get help')
+        list_page = ListPage(self).add_list_item('Get Help')
 
         # she notices a "Share this list" option
-        # FIXME there is an error here, ListPage obj has no function
         share_box = list_page.get_share_box()
         self.assertEqual(
             first=share_box.get_attribute('placeholder'),
@@ -46,7 +45,7 @@ class SharingTest(FunctionalTest):
         MyListsPage(self).go_to_my_lists_page()
 
         # he sees Edith's list in there!
-        self.browser.find_element_by_link_text('Get help').click()
+        self.browser.find_element_by_link_text('Get Help').click()
 
         # on the list page, Oniciferous can see Edith's list
         self.wait_for(lambda: self.assertEqual(
@@ -61,7 +60,6 @@ class SharingTest(FunctionalTest):
         self.browser = edith_browser
         self.browser.refresh()
         list_page.wait_for_row_in_list_table('Hi Edith!', 2)
-
 
 
 

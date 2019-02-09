@@ -13,14 +13,15 @@ class ListPage(object):
         self.test = test
 
     def get_table_rows(self):
-        return self.test.browser.find_elements_by_css_selector('#id_list_table')
-        # return self.test.browser.find_elements_by_css_selector('#id_list_table_tr')  # FIXME remove if test_sharing FT works
+        # return self.test.browser.find_elements_by_css_selector('#id_list_table')
+        return self.test.browser.find_elements_by_css_selector('#id_list_row')
 
     @wait
     def wait_for_row_in_list_table(self, item_text, item_number):
         expected_row_text = f'{item_number}: {item_text}'
         rows = self.get_table_rows()
-        self.test.assertIn(expected_row_text, [row.text for row in rows])
+        # self.test.assertIn(expected_row_text, [row.text for row in rows]) # at .split('\n') maybe?
+        self.test.assertIn(expected_row_text, [row.text for row in rows]) # at .split('\n') maybe?
 
 
     def get_item_input_box(self):
